@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-   prefect_server:
+  prefect_server:
     image: prefecthq/prefect:2.14-python3.11-conda
     container_name: prefect_server
     command: prefect server start
@@ -24,7 +24,6 @@ services:
         max-file: "3"
     networks:
       prefect:
-  
   nginx:
     container_name: nginx
     image: nginx
@@ -38,7 +37,7 @@ services:
         max-size: "1m"
         max-file: "3"
     networks:
-      splash_auth_network:
+      prefect:
 networks:
-  splash_auth_network:
+  prefect:
     driver: bridge
