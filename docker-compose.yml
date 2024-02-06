@@ -75,6 +75,8 @@ services:
       - '8075:8075'
     depends_on:
       - tiled
+    # Intermediate solution restarting frontend on failure due to connection issues
+    restart: always
     networks:
       mle_net:
 
