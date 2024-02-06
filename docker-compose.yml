@@ -64,6 +64,21 @@ services:
       mle_net:
 
 
+  mlex_segmentation:
+    image: ghcr.io/mlexchange/mlex_highres_segmentation:latest
+    environment:
+      - TILED_URI=http://tiled:8000/
+      - TILED_API_KEY=${TILED_API_KEY}
+      - USER_NAME=${MLEX_SEGM_USER}
+      - USER_PASSWORD=${MLEX_SEGM_PW}
+    ports:
+      - '8075:8075'
+    depends_on:
+      - tiled
+    networks:
+      mle_net:
+
+
 networks:
   mle_net:
     driver: bridge
