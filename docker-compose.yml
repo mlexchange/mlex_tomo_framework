@@ -42,7 +42,7 @@ services:
       - TILED_DB_NAME=${TILED_DB_NAME}
     volumes:
       - ./tiled/deploy:/deploy
-      - ./data:/storage/data
+      - ./data/tiled_storage:/tiled_storage
     depends_on:
       - tiled_db
     networks:
