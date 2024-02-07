@@ -8,6 +8,7 @@ trees:
     tree: catalog
     args:
       uri: "postgresql+asyncpg://${TILED_DB_USER}:${TILED_DB_PW}@tiled_db:5432/${TILED_DB_NAME}"
+      readable_storage: ["/tiled_storage"]
       writable_storage: "/tiled_storage"
       # This creates the database if it does not exist. This is convenient, but in
       # a horizonally-scaled deployment, this can be a race condition and multiple
