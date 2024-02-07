@@ -18,7 +18,9 @@ graph TD;
     Tiled<-->postgres;
     FileStore<-- serve -->Tiled;
     Savu_Reconstruction-- write-->FileStore;
-    Savu_Reconstruction-- notify new file-->Tiled;
+    Savu_Reconstruction-- notify new file-->RabbitMQ;
+    RabbitMQ-- notify new file-->Tiled_Ingester;
+    Tiled_Ingester-- create new connection-->Tiled;
 ```
 
 ## prefect server
