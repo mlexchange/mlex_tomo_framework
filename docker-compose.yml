@@ -72,7 +72,7 @@ services:
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
     ports:
-      - '8075:8075'
+      - 127.0.0.1:8075:8075
     depends_on:
       - tiled
     # Intermediate solution restarting frontend on failure due to connection issues
