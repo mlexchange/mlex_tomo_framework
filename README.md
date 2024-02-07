@@ -29,7 +29,7 @@ Database used by both tiled and prefect. Note that we are not installing postgre
 
 # podman notes
 Podman can be a little trickier than docker, especially when run in rootless mode (the default) and on Mac. A few notes about how I produced a working environment:
-- Install podman via brew (4.9.1)
+- Install podman via brew (4.9.2)
 - Create the virtual machine with
 ```
 podman machine init --now --cpus=4 --memory=4096 -v $HOME:$HOME

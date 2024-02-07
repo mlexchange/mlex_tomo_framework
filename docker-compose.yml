@@ -20,6 +20,7 @@ services:
   prefect_db:
     image: postgres:14.5-alpine
     userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # command: sleep 22222222
     environment:
       - POSTGRES_USER=${PREFECT_DB_USER}
       - POSTGRES_PASSWORD=${PREFECT_DB_PW}
@@ -80,6 +81,21 @@ services:
     networks:
       mle_net:
 
+
+  rabbitmq:
+    # command: sleep 888888
+    image: rabbitmq:3-management-alpine
+    userns_mode: keep-id:uid=100,gid=100 # tell podman to use the rabbitmq user
+    container_name: 'rabbitmq'
+    ports:
+        - 127.0.0.1:5672:5672
+        - 127.0.0.1:15672:15672
+    volumes:
+        - ./rabbitmq/data/:/var/lib/rabbitmq/
+        - ./rabbitmq/log/:/var/log/rabbitmq
+
+    networks:
+      mle_net:
 
 networks:
   mle_net:
