@@ -15,7 +15,8 @@ services:
       - prefect_db
     networks:
       mle_net:
-  
+
+
   prefect_db:
     image: postgres:14.5-alpine
     userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
@@ -28,7 +29,8 @@ services:
     restart: unless-stopped
     networks:
       mle_net:
-  
+
+
   tiled:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
     image: ghcr.io/bluesky/tiled:v0.1.0a113
@@ -40,9 +42,12 @@ services:
       - TILED_DB_NAME=${TILED_DB_NAME}
     volumes:
       - ./tiled/deploy:/deploy
-      - ./data:/storage/data
+      - ./data/tiled_storage:/tiled_storage
     depends_on:
       - tiled_db
+    networks:
+      mle_net:
+
 
   tiled_db:
     image: postgres:14.5-alpine
@@ -57,6 +62,24 @@ services:
     restart: unless-stopped
     networks:
       mle_net:
+
+
+  mlex_segmentation:
+    image: ghcr.io/mlexchange/mlex_highres_segmentation:latest
+    environment:
+      - TILED_URI=http://tiled:8000/
+      - TILED_API_KEY=${TILED_API_KEY}
+      - USER_NAME=${MLEX_SEGM_USER}
+      - USER_PASSWORD=${MLEX_SEGM_PW}
+    ports:
+      - 127.0.0.1:8075:8075
+    depends_on:
+      - tiled
+    # Intermediate solution restarting frontend on failure due to connection issues
+    restart: always
+    networks:
+      mle_net:
+
 
 networks:
   mle_net:
