@@ -1,3 +1,6 @@
 data/
 .env
 .DS_Store
+rabbitmq/
+
+.vscode/
