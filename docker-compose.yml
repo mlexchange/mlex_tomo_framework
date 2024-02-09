@@ -41,6 +41,7 @@ services:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
       - TILED_DB_NAME=${TILED_DB_NAME}
+      - TILED_SINGLE_USER_API_KEY=${TILED_SINGLE_USER_API_KEY}
     volumes:
       - ./tiled/deploy:/deploy
       - ./data/tiled_storage:/tiled_storage
@@ -64,6 +65,13 @@ services:
     networks:
       mle_net:
 
+  tiled_ingest:
+    build:
+      context: ../mlec_tiled_ingest
+    environment:
+      - TILED_DB_USER=${TILED_DB_USER}
+      - TILED_DB_PW=${TILED_DB_PW}
+      - TILED_DB_NAME=${TILED_DB_NAME}
 
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:latest
