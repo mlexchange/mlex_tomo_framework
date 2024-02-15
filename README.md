@@ -46,3 +46,17 @@ podman machine init --now --cpus=4 --memory=4096 -v $HOME:$HOME
 
 ## postgres
 mkdir -p ./postgress/data
+
+## Data folders
+This repo comes with configuration for several folders under the `/data` directory
+
+### prefect_db
+Folder for the postegres server for Prefect to write files is inlucded in `.gitignore`
+
+### tiled_db
+Folder for the postegres server for Tiled to write files is inlucded in `.gitignore`
+
+### tiled_storage
+Folder where Tiled reads and writes data. It has two subdirectories:
+- `recons` this folder contains sample reconstruction data, and is NOT included in `.gitignore`. It exists to easily deliver some synthetic data for developers to quickly test with. It is also a test base for the `tiled_ingest` project, which requires data to already exist in Tiled's file system.
+- `writable` this folder is intended for developers to write data into Tiled with, and is included in `.gitignore`

@@ -20,7 +20,6 @@ services:
   prefect_db:
     image: postgres:14.5-alpine
     userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
-    # command: sleep 22222222
     environment:
       - POSTGRES_USER=${PREFECT_DB_USER}
       - POSTGRES_PASSWORD=${PREFECT_DB_PW}
@@ -34,18 +33,20 @@ services:
 
   tiled:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
-    image: ghcr.io/bluesky/tiled:v0.1.0a113
+    image: ghcr.io/bluesky/tiled:v0.1.0a114
     ports:
       - "127.0.0.1:8000:8000"
     environment:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
       - TILED_DB_NAME=${TILED_DB_NAME}
+      - TILED_DB_SERVER=${TILED_DB_SERVER}
+      - TILED_SINGLE_USER_API_KEY=${TILED_SINGLE_USER_API_KEY}
     volumes:
       - ./tiled/deploy:/deploy
       - ./data/tiled_storage:/tiled_storage
-    depends_on:
-      - tiled_db
+    # depends_on:
+    #   - tiled_db
     networks:
       mle_net:
 
@@ -60,10 +61,26 @@ services:
     volumes:
       - ./data/tiled_db:/var/lib/postgresql/data:rw
       - ./data/tiled_storage:/tiled_storage
+    ports:
+      - "127.0.0.1:5432:5432"
     restart: unless-stopped
     networks:
       mle_net:
 
+  tiled_ingest:
+    build:
+      context: ../mlex_tiled_ingest
+    command: sleep 9999
+    environment:
+      - TILED_DB_USER=${TILED_DB_USER}
+      - TILED_DB_PW=${TILED_DB_PW}
+      - TILED_DB_NAME=${TILED_DB_NAME}
+      - TILED_DB_SERVER=${TILED_DB_SERVER}
+      - TILED_ECHO_SQL=1
+    volumes:
+      - ../mlex_tiled_ingest:/app
+      - ./tiled/deploy:/deploy
+      - ./data/tiled_storage:/tiled_storage
 
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:latest
