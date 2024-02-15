@@ -19,7 +19,7 @@ services:
 
   prefect_db:
     image: postgres:14.5-alpine
-    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
     # command: sleep 22222222
     environment:
       - POSTGRES_USER=${PREFECT_DB_USER}
@@ -52,7 +52,7 @@ services:
 
   tiled_db:
     image: postgres:14.5-alpine
-    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
     environment:
       - POSTGRES_USER=${TILED_DB_USER}
       - POSTGRES_PASSWORD=${TILED_DB_PW}
