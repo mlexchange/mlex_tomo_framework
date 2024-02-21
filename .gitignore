@@ -6,3 +6,7 @@ data/tiled_storage/writable
 rabbitmq/
 
 .vscode/
+
+mlex_dlsia_segmentation_prototype/
+mlex_prefect_worker/
+mlex_tiled_ingest/

@@ -3,14 +3,13 @@ services:
   prefect:
     image: prefecthq/prefect:2.14-python3.11
     command: prefect server start
-    # command: sleep 99999
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
       - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://${PREFECT_DB_USER}:${PREFECT_DB_PW}@prefect_db:5432/${PREFECT_DB_NAME} # Needed if using postgres and not sqlite
       # - PREFECT_UI_API_URL=https://localhost/api. needed if nginx is handling ssl termination
       - PREFECT_LOGGING_LEVEL=DEBUG
     ports:
-      - 127.0.0.1:4200:4200
+      - 4200:4200
     depends_on:
       - prefect_db
     networks:
@@ -19,7 +18,7 @@ services:
 
   prefect_db:
     image: postgres:14.5-alpine
-    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
     environment:
       - POSTGRES_USER=${PREFECT_DB_USER}
       - POSTGRES_PASSWORD=${PREFECT_DB_PW}
@@ -35,7 +34,7 @@ services:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
     image: ghcr.io/bluesky/tiled:v0.1.0a114
     ports:
-      - "127.0.0.1:8000:8000"
+      - "8000:8000"
     environment:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
@@ -53,7 +52,7 @@ services:
 
   tiled_db:
     image: postgres:14.5-alpine
-    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
     environment:
       - POSTGRES_USER=${TILED_DB_USER}
       - POSTGRES_PASSWORD=${TILED_DB_PW}
@@ -69,30 +68,34 @@ services:
 
   tiled_ingest:
     build:
-      context: ../mlex_tiled_ingest
-    command: sleep 9999
+      context: ./mlex_tiled_ingest
+    # command: sleep 9999
     environment:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
       - TILED_DB_NAME=${TILED_DB_NAME}
       - TILED_DB_SERVER=${TILED_DB_SERVER}
-      - TILED_ECHO_SQL=1
+      - TILED_INGEST_TILED_CONFIG_PATH=${TILED_INGEST_TILED_CONFIG_PATH}
+      - TILED_INGEST_RMQ_HOST=${TILED_INGEST_RMQ_HOST}
+      - TILED_INGEST_RMQ_USER=${TILED_INGEST_RMQ_USER}
+      - TILED_INGEST_RMQ_PW=${TILED_INGEST_RMQ_PW}
+
     volumes:
-      - ../mlex_tiled_ingest:/app
+      - ./mlex_tiled_ingest:/app
       - ./tiled/deploy:/deploy
       - ./data/tiled_storage:/tiled_storage
 
   mlex_segmentation:
-    image: ghcr.io/mlexchange/mlex_highres_segmentation:latest
+    image: ghcr.io/mlexchange/mlex_highres_segmentation:main
     environment:
-      - TILED_URI=http://tiled:8000/
-      - TILED_API_KEY=${TILED_API_KEY}
+      - DATA_TILED_URI=http://tiled:8000/
+      - DATA_API_KEY=${TILED_API_KEY}
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
     ports:
-      - 127.0.0.1:8075:8075
-    depends_on:
-      - tiled
+      - 8075:8075
+    # depends_on:
+    #   - tiled
     # Intermediate solution restarting frontend on failure due to connection issues
     restart: always
     networks:
@@ -102,7 +105,7 @@ services:
   rabbitmq:
     # command: sleep 888888
     image: rabbitmq:3-management-alpine
-    userns_mode: keep-id:uid=100,gid=100 # tell podman to use the rabbitmq user
+    # userns_mode: keep-id:uid=100,gid=100 # tell podman to use the rabbitmq user
     container_name: 'rabbitmq'
     ports:
         - 127.0.0.1:5672:5672
