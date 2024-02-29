@@ -10,3 +10,5 @@ rabbitmq/
 mlex_dlsia_segmentation_prototype/
 mlex_prefect_worker/
 mlex_tiled_ingest/
+
+docker-compose.override.yaml
