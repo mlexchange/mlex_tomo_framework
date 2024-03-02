@@ -1,0 +1,35 @@
+# this file provides an example dev override for users attempting this 
+# using podman and podman-compose on Mac. If so, rename this file to:
+#     docker-compose.override.yaml
+version: '3'
+services:
+  prefect_db:
+    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # ports:
+    #   - "127.0.0.1:5432:5432"
+
+  tiled_db:
+    userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
+    # ports:
+    #   - "127.0.0.1:5432:5432"
+
+  
+  activemq:
+    image: rmohr/activemq:5.15.9
+    ports:
+      - "127.0.0.1:8161:8161" # Admin console
+      - "127.0.0.1:61616:61616" # OpenWire
+      - "127.0.0.1:61613:61613" # STOMP
+  # rabbitmq:
+  #   # command: sleep 888888
+  #   image: rabbitmq:3-management-alpine
+  #   # userns_mode: keep-id:uid=100,gid=100 # tell podman to use the rabbitmq user
+  #   container_name: 'rabbitmq'
+  #   ports:
+  #       - 127.0.0.1:5672:5672
+  #       - 127.0.0.1:15672:15672 qi
+  #   volumes:
+  #       - ./rabbitmq/data/:/var/lib/rabbitmq/
+  #       - ./rabbitmq/log/:/var/log/rabbitmq
+  #   networks:
+  #     mle_net:
