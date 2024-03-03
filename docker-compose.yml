@@ -82,8 +82,12 @@ services:
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:main
     environment:
-      - DATA_TILED_URI=http://tiled:8000/
-      - DATA_API_KEY=${TILED_API_KEY}
+      - DATA_TILED_URI=http://tiled:8000/api/v1/metadata/recons
+      - DATA_TILED_API_KEY=${TILED_API_KEY}
+      - MASK_TILED_URI=http://tiled:8000/api/v1/metadata/mlex_store
+      - MASK_TILED_API_KEY=${TILED_API_KEY}
+      - SEG_TILED_URI=http://tiled:8000/api/v1/metadata/mlex_store
+      - SEG_TILED_API_KEY=${TILED_API_KEY}
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
     ports:
