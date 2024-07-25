@@ -12,7 +12,6 @@ services:
     userns_mode: keep-id:uid=70,gid=70 # tell podman to use the postgres user
     # ports:
     #   - "127.0.0.1:5432:5432"
-
   
   activemq:
     image: rmohr/activemq:5.15.9
@@ -33,3 +32,12 @@ services:
   #       - ./rabbitmq/log/:/var/log/rabbitmq
   #   networks:
   #     mle_net:
+
+  mlex_segmentation:
+    build:
+      context: "./mlex_highres_segmentation/"
+    command: "python app.py"
+    environment:
+      - EXPORT_FILE_PATH=exported_annotations.json
+      volumes:
+      - ./data/dash_storage:/app/exported_annotations.json

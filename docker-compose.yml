@@ -28,6 +28,7 @@ services:
     networks:
       mle_net:
 
+
   tiled:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
     image: ghcr.io/bluesky/tiled:v0.1.0a114
@@ -61,6 +62,7 @@ services:
     networks:
       mle_net:
 
+
   tiled_ingest:
     build:
       context: ./mlex_tiled_ingest
@@ -82,10 +84,18 @@ services:
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:main
     environment:
-      - DATA_TILED_URI=http://tiled:8000/
-      - DATA_API_KEY=${TILED_API_KEY}
+      - DATA_TILED_URI=http://tiled:8000/api/v1/metadata/recons
+      - DATA_TILED_API_KEY=${TILED_API_KEY}
+      - MASK_TILED_URI=http://tiled:8000/
+      - MASK_TILED_API_KEY=${TILED_API_KEY}
+      - SEG_TILED_URI=http://tiled:8000/
+      - SEG_TILED_API_KEY=${TILED_API_KEY}
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
+      - RESULTS_DIR=${RESULTS_DIR}
+      - PREFECT_API_URL=http://prefect:4200/api
+      - FLOW_NAME=${FLOW_NAME}
+      - TIMEZONE=${TIMEZONE}
     ports:
       - 8075:8075
     # depends_on:
@@ -95,7 +105,7 @@ services:
     networks:
       mle_net:
 
-  
+
 networks:
   mle_net:
     driver: bridge
