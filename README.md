@@ -18,8 +18,8 @@ graph TD;
     Tiled<-->postgres;
     FileStore<-- serve -->Tiled;
     Savu_Reconstruction-- write-->FileStore;
-    Savu_Reconstruction-- notify new file-->RabbitMQ;
-    RabbitMQ-- notify new file-->Tiled_Ingester;
+    Savu_Reconstruction-- notify new file-->ActiveMQ;
+    ActiveMQ-- notify new file-->Tiled_Ingester;
     Tiled_Ingester-- create new collection-->Tiled;
 ```
 
@@ -33,7 +33,7 @@ Database used by both tiled and prefect. Note that we are not installing postgre
 Data service where data is read/written from in web application.
 
 ## Tiled Ingester
-Service that listens on RabbitMQ for new files. 
+Service that listens on ActiveMQ for new files. 
 
 # podman notes
 Podman can be a little trickier than docker, especially when run in rootless mode (the default) and on Mac. A few notes about how I produced a working environment:
