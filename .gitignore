@@ -1,6 +1,8 @@
 data/prefect_db
 data/tiled_db
 data/tiled_storage/writable
+data/results
+data/tiled_storage/recons/rec20240425*
 .env
 .DS_Store
 rabbitmq/

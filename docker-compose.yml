@@ -66,6 +66,8 @@ services:
   tiled_ingest:
     build:
       context: ./mlex_tiled_ingest
+    profiles:
+      - ingest
     environment:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
@@ -96,8 +98,17 @@ services:
       - PREFECT_API_URL=http://prefect:4200/api
       - FLOW_NAME=${FLOW_NAME}
       - TIMEZONE=${TIMEZONE}
+      - FLOW_TYPE=${FLOW_TYPE}
+      - IMAGE_NAME=${IMAGE_NAME}
+      - IMAGE_TAG=${IMAGE_TAG}
+      - CONTAINER_NETWORK=${CONTAINER_NETWORK}
+      - MOUNT_RESULTS_DIR=${MOUNT_RESULTS_DIR}
+      - TRAIN_SCRIPT_PATH=${TRAIN_SCRIPT_PATH}
+      - SEGMENT_SCRIPT_PATH=${SEGMENT_SCRIPT_PATH}
     ports:
       - 8075:8075
+    volumes:
+      - ${MOUNT_RESULTS_DIR}:/app/work/results
     # depends_on:
     #   - tiled
     # Intermediate solution restarting frontend on failure due to connection issues
