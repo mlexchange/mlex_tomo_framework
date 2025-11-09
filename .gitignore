@@ -3,6 +3,7 @@ data/tiled_db
 data/tiled_storage/writable
 data/results
 data/tiled_storage/recons/rec20240425*
+data/mlflow*
 .env
 .DS_Store
 rabbitmq/
@@ -15,3 +16,4 @@ mlex_tiled_ingest/
 mlex_highres_segmentation/
 
 docker-compose.override.yaml
+basic_auth.ini
