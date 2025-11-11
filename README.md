@@ -60,3 +60,14 @@ Folder for the postegres server for Tiled to write files is inlucded in `.gitign
 Folder where Tiled reads and writes data. It has two subdirectories:
 - `recons` this folder contains sample reconstruction data, and is NOT included in `.gitignore`. It exists to easily deliver some synthetic data for developers to quickly test with. It is also a test base for the `tiled_ingest` project, which requires data to already exist in Tiled's file system.
 - `writable` this folder is intended for developers to write data into Tiled with, and is included in `.gitignore`
+
+## MLFlow Configuration in .env
+
+You need to set `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in the `.env` file, and also update the `admin_username` and `admin_password` fields in `basic_auth.ini`.
+Make sure that `MLFLOW_TRACKING_USERNAME` matches `admin_username`, and `MLFLOW_TRACKING_PASSWORD` matches `admin_password`.
+
+Create a `basic_auth.ini` file using `basic_auth.ini.example` as a reference:
+
+```sh
+cp basic_auth.ini.example basic_auth.ini
+```
