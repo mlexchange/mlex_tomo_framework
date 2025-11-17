@@ -89,7 +89,7 @@ services:
     volumes:
       - ./data/mlflow_storage:/mlartifacts:rw  # Persist MLflow models, logs, and artifacts
       - ./data/mlflow_auth:/mlflow_auth:rw # Dedicated volume for auth database
-      - ./basic_auth.ini:/basic_auth.ini
+      - ./basic_auth.ini:/basic_auth.ini:ro
 
   mlflow_db:
     image: postgres:14.5-alpine  # Lightweight PostgreSQL version

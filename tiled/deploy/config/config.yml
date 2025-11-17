@@ -3,6 +3,9 @@ authentication:
   # connect to _read_. An API key is still required to write.
   allow_anonymous_access: true
   single_user_api_key: ${TILED_SINGLE_USER_API_KEY}
+allow_origins:
+  - http://127.0.0.1:8075
+  - http://localhost:8075
 trees:
   - path: /
     tree: catalog
