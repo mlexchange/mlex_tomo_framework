@@ -2,7 +2,7 @@ data/prefect_db
 data/tiled_db
 data/tiled_storage/writable
 data/results
-data/tiled_storage/recons/rec20240425*
+data/tiled_storage/recons/
 data/mlflow*
 .env
 .DS_Store
