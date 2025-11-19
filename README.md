@@ -90,12 +90,4 @@ Folder where Tiled reads and writes data. It has two subdirectories:
 - `writable` this folder is intended for developers to write data into Tiled with, and is included in `.gitignore`
 
 ## MLFlow Configuration in .env
-
-You need to set `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in the `.env` file, and also update the `admin_username` and `admin_password` fields in `basic_auth.ini`.
-Make sure that `MLFLOW_TRACKING_USERNAME` matches `admin_username`, and `MLFLOW_TRACKING_PASSWORD` matches `admin_password`.
-
-Create a `basic_auth.ini` file using `basic_auth.ini.example` as a reference:
-
-```sh
-cp basic_auth.ini.example basic_auth.ini
-```
+You only need to set `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in the `.env` file. These values will be used to update the `admin_username` and `admin_password` fields in `basic_auth.ini.example` and automatically generate `basic_auth.ini` in the container when the service starts. There’s no need to modify `basic_auth.ini.example` or create `basic_auth.ini` manually.
