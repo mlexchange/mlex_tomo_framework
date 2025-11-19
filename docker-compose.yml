@@ -138,8 +138,6 @@ services:
       - SEG_TILED_API_KEY=${TILED_API_KEY}
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
-      - RESULTS_DIR=${RESULTS_DIR}
-      - WRITE_DIR=${WRITE_DIR}
       - PREFECT_API_URL=http://prefect:4200/api
       - FLOW_NAME=${FLOW_NAME}
       - TIMEZONE=${TIMEZONE}
@@ -152,8 +150,6 @@ services:
       - ALGORITHM_JSON_PATH=/app/assets/models.json
     ports:
       - 8075:8075
-    volumes:
-      - ${MOUNT_RESULTS_DIR}:/app/work/results
     # depends_on:
     #   - tiled
     # Intermediate solution restarting frontend on failure due to connection issues
