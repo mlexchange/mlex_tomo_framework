@@ -89,5 +89,15 @@ Folder where Tiled reads and writes data. It has two subdirectories:
 - `recons` this folder contains sample reconstruction data, and is NOT included in `.gitignore`. It exists to easily deliver some synthetic data for developers to quickly test with. It is also a test base for the `tiled_ingest` project, which requires data to already exist in Tiled's file system.
 - `writable` this folder is intended for developers to write data into Tiled with, and is included in `.gitignore`
 
-## MLFlow Configuration in .env
+## MLFlow Configuration
 You only need to set `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in the `.env` file. These values will be used to update the `admin_username` and `admin_password` fields in `basic_auth.ini.example` and automatically generate `basic_auth.ini` in the container when the service starts. There’s no need to modify `basic_auth.ini.example` or create `basic_auth.ini` manually.
+
+If you are running MLflow locally, add a hostname mapping so that `MLflow` resolves to your local machine:
+```bash
+sudo vim /etc/hosts
+```
+
+Then add the following line:
+```
+127.0.0.1 mlflow
+```
