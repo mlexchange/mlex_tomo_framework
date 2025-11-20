@@ -62,10 +62,55 @@ services:
     networks:
       mle_net:
 
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    container_name: mlflow-server
+    command: >
+      /bin/sh -c "
+      envsubst < /basic_auth.ini.example > /basic_auth.ini &&
+      exec mlflow server
+      --backend-store-uri postgresql://${MLFLOW_DB_USER}:${MLFLOW_DB_PW}@mlflow_db:5432/${MLFLOW_DB_NAME}
+      --host 0.0.0.0
+      --port 5000
+      --app-name basic-auth
+      "
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      - MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
+      - MLFLOW_FLASK_SERVER_SECRET_KEY=${MLFLOW_FLASK_SERVER_SECRET_KEY}
+      - MLFLOW_AUTH_CONFIG_PATH=/basic_auth.ini
+    depends_on:
+      - mlflow_db
+    networks:
+      - mle_net
+    volumes:
+      - ./data/mlflow_storage:/mlartifacts:rw
+      - ./data/mlflow_auth:/mlflow_auth:rw
+      - ./basic_auth.ini.example:/basic_auth.ini.example:ro
+
+  mlflow_db:
+    image: postgres:14.5-alpine  # Lightweight PostgreSQL version
+    container_name: mlflow-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${MLFLOW_DB_USER}
+      - POSTGRES_PASSWORD=${MLFLOW_DB_PW}
+      - POSTGRES_DB=${MLFLOW_DB_NAME}
+    volumes:
+      - ./data/mlflow_db:/var/lib/postgresql/data:rw
+    networks:
+      - mle_net
+
 
   tiled_ingest:
     build:
       context: ./mlex_tiled_ingest
+    profiles:
+      - ingest
     environment:
       - TILED_DB_USER=${TILED_DB_USER}
       - TILED_DB_PW=${TILED_DB_PW}
@@ -96,8 +141,21 @@ services:
       - PREFECT_API_URL=http://prefect:4200/api
       - FLOW_NAME=${FLOW_NAME}
       - TIMEZONE=${TIMEZONE}
+      - FLOW_TYPE=${FLOW_TYPE}
+      - IMAGE_NAME=${IMAGE_NAME}
+      - IMAGE_TAG=${IMAGE_TAG}
+      - CONTAINER_NETWORK=${CONTAINER_NETWORK}
+      - MOUNT_RESULTS_DIR=${MOUNT_RESULTS_DIR}
+      - TRAIN_SCRIPT_PATH=${TRAIN_SCRIPT_PATH}
+      - SEGMENT_SCRIPT_PATH=${SEGMENT_SCRIPT_PATH}
+      # MLflow
+      - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
+      - MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
     ports:
       - 8075:8075
+    volumes:
+      - ${MOUNT_RESULTS_DIR}:/app/work/results
     # depends_on:
     #   - tiled
     # Intermediate solution restarting frontend on failure due to connection issues

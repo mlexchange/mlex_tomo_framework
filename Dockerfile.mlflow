@@ -1,0 +1,7 @@
+FROM ghcr.io/mlflow/mlflow:v2.22.0
+
+# Install gettext (provides envsubst) and other dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gettext && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir psycopg2-binary 'mlflow[auth]'

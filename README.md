@@ -30,7 +30,35 @@ RESTful service with a UI that controls and tracks workflows
 Database used by both tiled and prefect. Note that we are not installing postgres currently in this project. Both servers default to using sqlite, which is pretty great for this.
 
 ## Tiled
-Data service where data is read/written from in web application.
+
+Tiled is a data service that handles read/write operations for the web application.
+
+Since we use [tiled-viewer](https://github.com/bluesky/tiled-viewer-dash), the browser needs to communicate directly with the Tiled server.
+
+### Running Tiled Locally
+
+If you are running Tiled locally, follow these steps:
+
+#### 1. Add Hostname Mapping
+
+Add a hostname mapping so that `tiled` resolves to your local machine:
+```bash
+sudo vim /etc/hosts
+```
+
+Then add the following line:
+```
+127.0.0.1 tiled
+```
+
+#### 2. Configure CORS
+
+In your Tiled `config.yml`, ensure that CORS is configured to allow browser access. For local deployment, set:
+```yaml
+allow_origins:
+  - http://127.0.0.1:8075
+  - http://localhost:8075
+```
 
 ## Tiled Ingester
 Service that listens on ActiveMQ for new files. 
@@ -60,3 +88,6 @@ Folder for the postegres server for Tiled to write files is inlucded in `.gitign
 Folder where Tiled reads and writes data. It has two subdirectories:
 - `recons` this folder contains sample reconstruction data, and is NOT included in `.gitignore`. It exists to easily deliver some synthetic data for developers to quickly test with. It is also a test base for the `tiled_ingest` project, which requires data to already exist in Tiled's file system.
 - `writable` this folder is intended for developers to write data into Tiled with, and is included in `.gitignore`
+
+## MLFlow Configuration in .env
+You only need to set `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in the `.env` file. These values will be used to update the `admin_username` and `admin_password` fields in `basic_auth.ini.example` and automatically generate `basic_auth.ini` in the container when the service starts. There’s no need to modify `basic_auth.ini.example` or create `basic_auth.ini` manually.
