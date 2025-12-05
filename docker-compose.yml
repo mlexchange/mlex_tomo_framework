@@ -2,6 +2,7 @@ version: "3.3"
 services:
   prefect:
     image: prefecthq/prefect:3.4.2-python3.11
+    container_name: prefect-server
     command: prefect server start
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
@@ -17,6 +18,7 @@ services:
 
 
   prefect_db:
+    container_name: prefect-db
     image: postgres:14.5-alpine
     environment:
       - POSTGRES_USER=${PREFECT_DB_USER}
@@ -32,6 +34,7 @@ services:
   tiled:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
     image: ghcr.io/bluesky/tiled:v0.1.0a114
+    container_name: tiled-server
     ports:
       - "8000:8000"
     environment:
@@ -50,6 +53,7 @@ services:
 
 
   tiled_db:
+    container_name: tiled-db
     image: postgres:14.5-alpine
     environment:
       - POSTGRES_USER=${TILED_DB_USER}
@@ -128,24 +132,28 @@ services:
 
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:main
+    container_name: mlex-segmentation
     command: sh -c "python scripts/save_mlflow_algorithm.py || true && gunicorn -b 0.0.0.0:8075 --reload app:server"
     environment:
+      # Tiled
       - DATA_TILED_URI=http://tiled:8000/api/v1/metadata/recons
       - DATA_TILED_API_KEY=${TILED_API_KEY}
       - MASK_TILED_URI=http://tiled:8000/
       - MASK_TILED_API_KEY=${TILED_API_KEY}
       - SEG_TILED_URI=http://tiled:8000/
       - SEG_TILED_API_KEY=${TILED_API_KEY}
+      # Dash 
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
+      # Prefect
       - PREFECT_API_URL=http://prefect:4200/api
       - FLOW_NAME=${FLOW_NAME}
       - TIMEZONE=${TIMEZONE}
-      # MLflow
+      # MLFlow
       - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
       - MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
       - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
-      # MLflow algorithm registration
+      # MLFlow algorithm registration
       - MLFLOW_TRACKING_URI_OUTSIDE=${MLFLOW_TRACKING_URI}
       - ALGORITHM_JSON_PATH=/app/assets/models.json
     ports:
