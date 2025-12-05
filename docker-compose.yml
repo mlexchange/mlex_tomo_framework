@@ -145,6 +145,8 @@ services:
       # Dash 
       - USER_NAME=${MLEX_SEGM_USER}
       - USER_PASSWORD=${MLEX_SEGM_PW}
+      # Saved outside of /app to not retrigger dash reloads
+      - EXPORT_FILE_PATH=/dash_storage/exported_annotations.json
       # Prefect
       - PREFECT_API_URL=http://prefect:4200/api
       - FLOW_NAME=${FLOW_NAME}
@@ -156,6 +158,9 @@ services:
       # MLFlow algorithm registration
       - MLFLOW_TRACKING_URI_OUTSIDE=${MLFLOW_TRACKING_URI}
       - ALGORITHM_JSON_PATH=/app/assets/models.json
+    volumes:
+      # Persist annotations between container restarts
+      - ./data/dash_storage:/dash_storage:rw
     ports:
       - 8075:8075
     # depends_on:
