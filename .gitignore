@@ -4,6 +4,7 @@ data/tiled_storage/writable
 data/results
 data/tiled_storage/recons/
 data/mlflow*
+data/sam3_cache/
 .env
 .DS_Store
 rabbitmq/

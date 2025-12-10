@@ -148,7 +148,8 @@ services:
       # MLflow algorithm registration
       - MLFLOW_TRACKING_URI_OUTSIDE=${MLFLOW_TRACKING_URI}
       - ALGORITHM_JSON_PATH=/app/assets/models.json
-      - HF_TOKEN=${HF_TOKEN}
+      - SAM3_INFERENCE_URL=${SAM3_INFERENCE_URL}
+      - SAM3_TIMEOUT=${SAM3_TIMEOUT}
     ports:
       - 8075:8075
     # depends_on:
@@ -158,6 +159,26 @@ services:
     networks:
       mle_net:
 
+  sam3-inference:
+    build:
+      context: .
+      dockerfile: Dockerfile.sam3-inference
+    container_name: sam3-inference
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
+      - HF_TOKEN=${HF_TOKEN}
+      - SAM_MODEL_NAME=${SAM_MODEL_NAME:-facebook/sam3}
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./data/sam3_cache:/cache
+    networks:
+      - mle_net
+    depends_on:
+      - mlflow
+    restart: unless-stopped
 
 networks:
   mle_net:
