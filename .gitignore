@@ -5,6 +5,7 @@ data/results
 data/tiled_storage/recons/
 data/mlflow*
 data/sam3_cache/
+__pycache__
 .env
 .DS_Store
 rabbitmq/
