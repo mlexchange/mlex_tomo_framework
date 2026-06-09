@@ -1,0 +1,40 @@
+# config_inference.yaml
+# Configuration for: run_inference.py / test_model_inference.ipynb
+
+# ---------------------------------------------------------------------------
+# Inference switches — mirrors config_register.yaml
+# Set true to run inference with that model, false to skip
+# ---------------------------------------------------------------------------
+infer:
+  vit:               "vits16"   # must match what was registered
+  eomt:              false      # dinov3_vits16_eomt
+  eomt_coco:         true       # dinov3_vits16_eomt_coco
+  eomt_cityscapes:   true       # dinov3_vits16_eomt_cityscapes
+  eomt_cityscapes_petiole: true # dinov3_vits16_eomt_cityscapes_petiole
+
+  # Finetuned models — add any registered finetuned model name here
+  # These are registered by finetune.py under mlflow.finetuned_model_name
+  # finetuned:
+  #   - "petiole_vits16_eomt_cityscapes_ft"
+
+# ---------------------------------------------------------------------------
+# MLflow
+# ---------------------------------------------------------------------------
+mlflow:
+  experiment_name: "dinov3_segmentation"
+  model_version: "latest"                  # "latest" or a specific version e.g. "1", "2"
+
+# ---------------------------------------------------------------------------
+# Dataset classes
+# ---------------------------------------------------------------------------
+dataset:
+  classes:
+    0:   "background"
+    1:   "cortex"
+    2:   "Phloem Fibers"
+    3:   "Phloem"
+    4:   "Hydrated Xylem vessels"
+    5:   "Air-based Pith cells"
+    6:   "Water-based Pith cells"
+    7:   "Dehydrated Xylem vessels"
+    255: "unknown"

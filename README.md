@@ -101,3 +101,31 @@ Then add the following line:
 ```
 127.0.0.1 mlflow
 ```
+
+## MLflow Model Registration
+
+If you already have a trained model (e.g. a `.ckpt` file) that was trained without MLflow registration, you can register it to MLflow using a wrapper.
+
+> **Note:** `lightly_train` requires PyTorch >= 2.4, which is not supported on Apple Silicon Macs. The solution is to build and use a Docker container.
+
+### 1. Build the container
+
+```bash
+docker compose build --no-cache lightly
+```
+
+### 2. Register pretrained model to MLflow
+
+Edit `config_register.yaml` to point `custom.pt_path` to your `.ckpt` file and set the appropriate register switches, then run:
+
+```bash
+docker compose run --rm lightly python save_mlflow_wrapper.py --config config_register.yaml
+```
+
+### 3. Inference (optional)
+
+Select data from Tiled, run inference with registered models, and save results:
+
+```bash
+docker compose run --rm lightly python run_inference.py
+```

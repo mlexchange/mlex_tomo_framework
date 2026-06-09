@@ -31,7 +31,7 @@ services:
 
   tiled:
     # see the file ./tiled/deploy/config.yml for detailed configuration of tiled
-    image: ghcr.io/bluesky/tiled:v0.1.0a114
+    image: ghcr.io/bluesky/tiled:0.2.0
     ports:
       - "8000:8000"
     environment:
@@ -128,8 +128,12 @@ services:
 
   mlex_segmentation:
     image: ghcr.io/mlexchange/mlex_highres_segmentation:main
-    command: sh -c "python scripts/save_mlflow_algorithm.py || true && gunicorn -b 0.0.0.0:8075 --reload app:server"
+    command: sh -c "python scripts/save_mlflow_algorithm.py --overwrite || true && gunicorn -b 0.0.0.0:8075 --reload app:server"
+    volumes:
+      - ./data/annotations:/app/data
+      - ./data/mlflow_algorithm_cache:/mlflow_algorithm_cache
     environment:
+      - EXPORT_FILE_PATH=/app/data/exported_annotation_data.json
       - DATA_TILED_URI=http://tiled:8000/api/v1/metadata/recons
       - DATA_TILED_API_KEY=${TILED_API_KEY}
       - MASK_TILED_URI=http://tiled:8000/
@@ -148,6 +152,7 @@ services:
       # MLflow algorithm registration
       - MLFLOW_TRACKING_URI_OUTSIDE=${MLFLOW_TRACKING_URI}
       - ALGORITHM_JSON_PATH=/app/assets/models.json
+      - MLFLOW_CACHE_DIR=/mlflow_algorithm_cache
     ports:
       - 8075:8075
     # depends_on:
@@ -157,6 +162,31 @@ services:
     networks:
       mle_net:
 
+  lightly:
+    build:
+      context: ./scripts
+      dockerfile: ../Dockerfile.lightly
+    container_name: lightly
+    environment:
+      - MLFLOW_TRACKING_URI_OUTSIDE=http://mlflow:5000
+      - MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
+      - TILED_API_KEY=${TILED_SINGLE_USER_API_KEY}
+      - DATA_TILED_URI_IMAGES=${DATA_TILED_URI_IMAGES}
+      - DATA_TILED_URI_MASKS=${DATA_TILED_URI_MASKS}
+      - MLFLOW_CACHE_DIR=/mlflow_model_cache
+    volumes:
+      - ./data/lightly_cache:/lightly_cache
+      - ./data/mlflow_model_cache:/mlflow_model_cache
+      - ./data/lightly_results:/results
+      - ./scripts:/app
+    depends_on:
+      - mlflow
+      - tiled
+    networks:
+      mle_net:
+    profiles:
+      - lightly
 
 networks:
   mle_net:

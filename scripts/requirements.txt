@@ -1,0 +1,32 @@
+# requirements_finetune.txt
+# For: python finetune.py
+#
+# Install:
+#   pip install -r requirements_finetune.txt
+
+# --- PyTorch ---
+torch==2.9.1
+torchvision==0.24.1
+
+# --- lightly_train and its direct deps ---
+lightly-train==0.13.2
+pytorch-lightning==2.6.0
+numpy==2.2.6
+Pillow
+
+# --- MLflow (to download checkpoint and register finetuned model) ---
+mlflow==2.22.0
+
+# --- Tiled (to read images and masks) ---
+tiled==0.2.0
+entrypoints
+stamina
+dask
+
+# --- Config / env loading ---
+pyyaml
+python-dotenv
+
+# --- MLExchange utilities ---
+mlex_utils[all] @ git+https://github.com/mlexchange/mlex_utils.git
+mlex_lightly[all] @ git+https://github.com/xiaoyachong/mlex_lightlytrain_segmentation_prototype.git
